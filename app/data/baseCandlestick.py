@@ -18,7 +18,8 @@ class BaseCandlestick(ABC):
 
     def req_data(self):
         res = requests.get(self.req_str)
-        return res.content
+        data = json.loads(res.content)['data']
+        return data
 
     @abstractmethod
     def parse_data(self, data):

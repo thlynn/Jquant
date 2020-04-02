@@ -45,8 +45,10 @@ class Bar:
     high_price: Decimal
     low_price: Decimal
     close_price: Decimal
+    # Accumulated trading volume, in base currency
     volume: Decimal = Decimal('0')
-    # 持仓量
+    # Accumulated trading value, in quote currency
+    volume_quote: Decimal = Decimal('0')
     open_interest: Decimal = Decimal('0')
 
 
@@ -54,7 +56,7 @@ class Bar:
 class Tick:
 
     timestamp: int
-    # 成交量
+    # Accumulated trading volume, in base currency
     volume: Decimal
     open_price: Decimal
     high_price: Decimal
