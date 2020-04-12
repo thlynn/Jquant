@@ -2,12 +2,12 @@ import threading
 import gzip
 import json
 from websocket import create_connection
-from Jquant.utilities.tools import inflate
-from Jquant.model.BaseModel import Tick
+from utilities.tools import inflate
+from model.BaseModel import Tick
 from datetime import datetime
 
 
-class P_OKEX(threading.Thread):
+class SubscribeOKEXFuture(threading.Thread):
 
     def __init__(self, name, callback):
         super().__init__(name=name)
@@ -22,9 +22,9 @@ class P_OKEX(threading.Thread):
             if result == b'pong':
                 pass
             else:
-                jsonObj = json.loads(result)
-                if('data' in jsonObj.keys()):
-                    data = jsonObj['data'][0]
+                json_obj = json.loads(result)
+                if 'data' in json_obj.keys():
+                    data = json_obj['data'][0]
                     candle = data['candle']
                     timestamp = datetime.strptime(
                         candle[0], '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -36,7 +36,7 @@ class P_OKEX(threading.Thread):
                         self.ws_okex.send('ping')
 
 
-class P_HUOBI(threading.Thread):
+class SubscribeHUOBIFuture(threading.Thread):
 
     def __init__(self, name, callback):
         super().__init__(name=name)
@@ -46,15 +46,15 @@ class P_HUOBI(threading.Thread):
     def run(self):
         while True:
             result = gzip.decompress(self.ws_huobi.recv()).decode('utf-8')
-            jsonObj = json.loads(result)
-            if(jsonObj.get('status') == 'error'):
+            json_obj = json.loads(result)
+            if json_obj.get('status') == 'error':
                 pass
-            elif('ping' in jsonObj.keys()):
-                pong = '{"pong":'+str(jsonObj['ping'])+'}'
+            elif 'ping' in json_obj.keys():
+                pong = '{"pong":'+str(json_obj['ping'])+'}'
                 self.ws_huobi.send(pong)
-            elif('ch' in jsonObj.keys()):
+            elif 'ch' in json_obj.keys():
                 obj = Tick()
-                tick = jsonObj['tick']
+                tick = json_obj['tick']
                 obj.timestamp = tick['id']
                 obj.volume = tick['vol']
                 obj.open_price = tick['open']
