@@ -111,7 +111,8 @@ class SubscribeEXMO(Subscribe):
             time.sleep(0.5)
             try:
                 res = requests.get(self.ticker_url, timeout=5)
-            except requests.exceptions.ProxyError or requests.exceptions.SSLError or requests.exceptions.ReadTimeout:
+            except requests.exceptions.ProxyError or requests.exceptions.SSLError or \
+                    requests.exceptions.ReadTimeout or requests.exceptions.ConnectionError:
                 continue
             ticker = json.loads(res.content)[f'{str.upper(self.base_symbol)}_{str.upper(self.quote_symbol)}']
             updated = ticker['updated']
