@@ -4,4 +4,4 @@
 *.ipynb
 *.pyc
 **/key.ini
-/app
+/app_private
