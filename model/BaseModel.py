@@ -40,7 +40,7 @@ class Bar:
     quote_symbol: str
     exchange: str
     period: str
-    timestamp: float
+    timestamp: int
     open_price: Decimal
     high_price: Decimal
     low_price: Decimal

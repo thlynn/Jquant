@@ -8,6 +8,8 @@ import requests
 from websocket import create_connection
 from datetime import datetime
 
+from data.tools import inflate
+
 
 class SubscribeOKEXFuture(threading.Thread):
 
@@ -64,37 +66,42 @@ class SubscribeHUOBIFuture(threading.Thread):
 
 class Subscribe(threading.Thread):
 
-    def __init__(self, name):
+    def __init__(self, base_symbol, quote_symbol, name, callback=None):
         super().__init__(name=name)
+        self.base_symbol = base_symbol
+        self.quote_symbol = quote_symbol
         self.timestamp = float
         self.open: Decimal = Decimal('0')
         self.close: Decimal = Decimal('0')
         self.low: Decimal = Decimal('0')
         self.high: Decimal = Decimal('0')
         self.amount = Decimal('0')
+        self.callback = callback
 
 
 class SubscribeHUOBI(Subscribe):
 
-    def __init__(self, base_symbol, quote_symbol, name='HUOBI'):
-        super().__init__(name=name)
-        self.ws_url = create_connection("wss://api.huobi.pro/ws")
-        topic = {
-            "sub": f"market.{str.lower(base_symbol)}{str.lower(quote_symbol)}.kline.1min",
-            "id": "id1"
-        }
-        self.ws_url.send(json.dumps(topic))
+    def __init__(self, base_symbol, quote_symbol, name='HUOBI', callback=None):
+        super().__init__(base_symbol, quote_symbol, name, callback)
+        self.ws_url = "wss://api.huobi.pro/ws"
 
     def run(self):
+        topic = {
+            "sub": f"market.{str.lower(self.base_symbol)}{str.lower(self.quote_symbol)}.kline.1min",
+            "id": "id1"
+        }
+        ws = create_connection("wss://api.huobi.pro/ws")
+        ws.send(json.dumps(topic))
+
         while True:
-            result = gzip.decompress(self.ws_url.recv()).decode('utf-8')
+            result = gzip.decompress(ws.recv()).decode('utf-8')
             json_obj = json.loads(result)
 
             if json_obj.get('status') == 'error':
                 pass
             elif 'ping' in json_obj.keys():
                 pong = '{"pong":'+str(json_obj['ping'])+'}'
-                self.ws_url.send(pong)
+                ws.send(pong)
             elif 'ch' in json_obj.keys():
                 tick = json_obj['tick']
                 self.timestamp = tick['id']
@@ -104,14 +111,15 @@ class SubscribeHUOBI(Subscribe):
                 self.high = Decimal(str(tick['high']))
                 self.amount = Decimal(str(tick['amount']))
 
+                if self.callback:
+                    self.callback()
+
 
 class SubscribeEXMO(Subscribe):
 
     def __init__(self, base_symbol, quote_symbol, name='EXMO'):
-        super().__init__(name=name)
+        super().__init__(base_symbol, quote_symbol, name)
         self.ticker_url = "https://api.exmo.com/v1/ticker/"
-        self.base_symbol = base_symbol
-        self.quote_symbol = quote_symbol
 
     def run(self):
         while True:
