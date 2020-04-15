@@ -36,19 +36,19 @@ class TradeInfo:
 
 @dataclass
 class Bar:
-
-    symbol: str
+    base_symbol: str
+    quote_symbol: str
     exchange: str
     period: str
-    timestamp: int
+    timestamp: float
     open_price: Decimal
     high_price: Decimal
     low_price: Decimal
     close_price: Decimal
     # Accumulated trading volume, in base currency
-    volume: Decimal = Decimal('0')
+    amount: Decimal = Decimal('0')
     # Accumulated trading value, in quote currency
-    volume_quote: Decimal = Decimal('0')
+    volume: Decimal = Decimal('0')
     open_interest: Decimal = Decimal('0')
 
 

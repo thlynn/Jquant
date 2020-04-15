@@ -6,7 +6,6 @@ from decimal import Decimal
 
 import requests
 from websocket import create_connection
-from utilities.tools import inflate
 from datetime import datetime
 
 
@@ -67,8 +66,12 @@ class Subscribe(threading.Thread):
 
     def __init__(self, name):
         super().__init__(name=name)
-        self.timestamp = None
-        self.close = None
+        self.timestamp = float
+        self.open: Decimal = Decimal('0')
+        self.close: Decimal = Decimal('0')
+        self.low: Decimal = Decimal('0')
+        self.high: Decimal = Decimal('0')
+        self.amount = Decimal('0')
 
 
 class SubscribeHUOBI(Subscribe):
@@ -95,7 +98,11 @@ class SubscribeHUOBI(Subscribe):
             elif 'ch' in json_obj.keys():
                 tick = json_obj['tick']
                 self.timestamp = tick['id']
+                self.open = Decimal(str(tick['open']))
                 self.close = Decimal(str(tick['close']))
+                self.low = Decimal(str(tick['low']))
+                self.high = Decimal(str(tick['high']))
+                self.amount = Decimal(str(tick['amount']))
 
 
 class SubscribeEXMO(Subscribe):
