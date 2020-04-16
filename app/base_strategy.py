@@ -2,7 +2,6 @@ import datetime
 
 import pandas as pd
 
-from data.sub_market import Subscribe
 from model.BaseModel import Bar
 
 
@@ -12,7 +11,6 @@ class BaseStrategy:
         self.base_symbol = base_symbol
         self.quote_symbol = quote_symbol
         self.df_minute_bars: pd.DataFrame = None
-        self.sub: Subscribe
 
     def init_bars(self, bars):
         self.df_minute_bars = pd.DataFrame(data=[bar.__dict__ for bar in bars])
@@ -29,7 +27,7 @@ class BaseStrategy:
         bar_timestamp -= bar_datetime.second
         
         last_bar = self.df_minute_bars.iloc[-1]
-        
+
         if bar_timestamp > last_bar.name:
             self.df_minute_bars.append(pd.DataFrame([bar.__dict__]).set_index('timestamp'))
         elif bar_timestamp == last_bar.name:
@@ -42,7 +40,7 @@ class BaseStrategy:
             # TODO: raise exception
             pass
 
-    def on_bar(self):
+    def on_bar(self, bar: Bar):
         pass
 
     def on_trade(self):
