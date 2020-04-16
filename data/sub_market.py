@@ -9,6 +9,7 @@ from websocket import create_connection
 from datetime import datetime
 
 from data.tools import inflate
+from model.BaseModel import Bar
 
 
 class SubscribeOKEXFuture(threading.Thread):
@@ -66,7 +67,7 @@ class SubscribeHUOBIFuture(threading.Thread):
 
 class Subscribe(threading.Thread):
 
-    def __init__(self, base_symbol, quote_symbol, name, callback=None):
+    def __init__(self, base_symbol, quote_symbol, intervals, name='', callback=None):
         super().__init__(name=name)
         self.base_symbol = base_symbol
         self.quote_symbol = quote_symbol
@@ -77,17 +78,18 @@ class Subscribe(threading.Thread):
         self.high: Decimal = Decimal('0')
         self.amount = Decimal('0')
         self.callback = callback
+        self.intervals = intervals
 
 
 class SubscribeHUOBI(Subscribe):
 
-    def __init__(self, base_symbol, quote_symbol, name='HUOBI', callback=None):
-        super().__init__(base_symbol, quote_symbol, name, callback)
+    def __init__(self, base_symbol, quote_symbol, intervals, name='HUOBI', callback=None):
+        super().__init__(base_symbol, quote_symbol, intervals, name, callback)
         self.ws_url = "wss://api.huobi.pro/ws"
 
     def run(self):
         topic = {
-            "sub": f"market.{str.lower(self.base_symbol)}{str.lower(self.quote_symbol)}.kline.1min",
+            "sub": f"market.{str.lower(self.base_symbol)}{str.lower(self.quote_symbol)}.kline.{self.intervals}",
             "id": "id1"
         }
         ws = create_connection("wss://api.huobi.pro/ws")
@@ -112,7 +114,10 @@ class SubscribeHUOBI(Subscribe):
                 self.amount = Decimal(str(tick['amount']))
 
                 if self.callback:
-                    self.callback()
+                    bar = Bar(
+                        self.base_symbol, self.quote_symbol, self.name, self.intervals,
+                        self.open, self.high, self.low, self.close, self.amount)
+                    self.callback(bar)
 
 
 class SubscribeEXMO(Subscribe):
