@@ -11,12 +11,23 @@ class Exchange(Enum):
 
 
 @dataclass
-class Order:
+class OrderFuture:
+    base_symbol: str
+    quote_symbol: str
+    # sell/buy
     direction: str
+    # open/close
     offset: str
     price: Decimal
     volume: Decimal
-    type: str
+    # limit/market order
+    order_type: str
+    lever_rate: int
+    order_client_id: int
+    trade_volume: Decimal = Decimal('0')
+    trade_avg_price: Decimal = Decimal('0')
+    # pending  completed
+    order_status: str = 'pending'
 
 
 @dataclass()

@@ -1,5 +1,6 @@
 from .HuobiDMUtil import http_get_request, api_key_post
 
+
 class HuobiDM:
 
     def __init__(self, url, access_key, secret_key):
@@ -12,7 +13,7 @@ class HuobiDM:
         """
         参数名称         参数类型  必填    描述
         symbol          string  false   "BTC","ETH"...
-        contract_type   string  false   合约类型: this_week:当周 next_week:下周 quarter:季度
+        contract_type   string  false   get_contract_order_info合约类型: this_week:当周 next_week:下周 quarter:季度
         contract_code   string  false   BTC181228
         备注：如果contract_code填了值，那就按照contract_code去查询，如果contract_code 没有填值，则按照symbol+contract_type去查询
         """
@@ -27,7 +28,6 @@ class HuobiDM:
         url = self.__url + '/api/v1/contract_contract_info'
         return http_get_request(url, params)
     
-    
     # 获取合约指数信息
     def get_contract_index(self, symbol):
         """
@@ -37,7 +37,6 @@ class HuobiDM:
     
         url = self.__url + '/api/v1/contract_index'
         return http_get_request(url, params)
-    
     
     # 获取合约最高限价和最低限价
     def get_contract_price_limit(self, symbol='', contract_type='', contract_code=''):
@@ -58,7 +57,6 @@ class HuobiDM:
         url = self.__url + '/api/v1/contract_price_limit'
         return http_get_request(url, params)
     
-    
     # 获取当前可用合约总持仓量
     def get_contract_open_interest(self, symbol='', contract_type='', contract_code=''):
         """
@@ -73,8 +71,7 @@ class HuobiDM:
     
         url = self.__url + '/api/v1/contract_open_interest'
         return http_get_request(url, params)   
-        
-    
+
     # 获取行情深度
     def get_contract_depth(self, symbol, type):
         """
@@ -87,8 +84,7 @@ class HuobiDM:
     
         url = self.__url + '/market/depth'
         return http_get_request(url, params)
-    
-    
+
     # 获取KLine
     def get_contract_kline(self, symbol, period, size=150):
         """
@@ -104,8 +100,7 @@ class HuobiDM:
     
         url = self.__url + '/market/history/kline'
         return http_get_request(url, params)
-    
-    
+
     # 获取聚合行情
     def get_contract_market_merged(self, symbol):
         """
@@ -115,21 +110,20 @@ class HuobiDM:
     
         url = self.__url + '/market/detail/merged'
         return http_get_request(url, params)
-    
-    
+
     # 获取市场最近成交记录
     def get_contract_trade(self, symbol, size=1):
         """
+        :param size:
         :param symbol: 可选值：{ BTC_CW, BTC_NW, BTC_CQ, etc. }
         :return:
         """
         params = {'symbol': symbol,
-                  'size' : size}
+                  'size': size}
     
         url = self.__url + '/market/trade'
         return http_get_request(url, params)
-    
-    
+
     # 批量获取最近的交易记录
     def get_contract_batch_trade(self, symbol, size=1):
         """
@@ -137,7 +131,7 @@ class HuobiDM:
         :return:
         """
         params = {'symbol': symbol,
-                  'size' : size}
+                  'size': size}
     
         url = self.__url + '/market/history/trade'
         return http_get_request(url, params)
@@ -162,7 +156,6 @@ class HuobiDM:
         request_path = '/api/v1/contract_account_info'
         return api_key_post(self.__url, request_path, params, self.__access_key, self.__secret_key)
     
-    
     # 获取用户持仓信息
     def get_contract_position_info(self, symbol=''):
         """
@@ -176,9 +169,7 @@ class HuobiDM:
     
         request_path = '/api/v1/contract_position_info'
         return api_key_post(self.__url, request_path, params, self.__access_key, self.__secret_key)
-    
-    
-    
+
     # 合约下单
     def send_contract_order(self, symbol, contract_type, contract_code, 
                             client_order_id, price,volume,direction,offset,
@@ -216,8 +207,6 @@ class HuobiDM:
         request_path = '/api/v1/contract_order'
         return api_key_post(self.__url, request_path, params, self.__access_key, self.__secret_key)
     
-    
-    
     # 合约批量下单
     def send_contract_batchorder(self, orders_data):
         """
@@ -238,7 +227,6 @@ class HuobiDM:
         params = orders_data
         request_path = '/api/v1/contract_batchorder'
         return api_key_post(self.__url, request_path, params, self.__access_key, self.__secret_key)
-    
     
     # 撤销订单
     def cancel_contract_order(self, symbol, order_id='', client_order_id=''):
@@ -269,15 +257,14 @@ class HuobiDM:
     
         request_path = '/api/v1/contract_cancelall'
         return api_key_post(self.__url, request_path, params, self.__access_key, self.__secret_key)
-    
-    
+
     # 获取合约订单信息
     def get_contract_order_info(self, symbol, order_id='', client_order_id=''):
         """
         参数名称	        是否必须	类型	    描述
         symbol          true    string  BTC, ETH, ...
         order_id	        false	string	订单ID（ 多个订单ID中间以","分隔,一次最多允许查询20个订单 ）
-        client_order_id	false	string	客户订单ID(多个订单ID中间以","分隔,一次最多允许查询20个订单)
+        client_order_id	 false	string	客户订单ID(多个订单ID中间以","分隔,一次最多允许查询20个订单)
         备注：order_id和client_order_id都可以用来查询，同时只可以设置其中一种，如果设置了两种，默认以order_id来查询。
         """
         
@@ -290,9 +277,7 @@ class HuobiDM:
         request_path = '/api/v1/contract_order_info'
         return api_key_post(self.__url, request_path, params, self.__access_key, self.__secret_key)
     
-    
     # 获取合约订单明细信息
-        
     def get_contract_order_detail(self, symbol, order_id, order_type, created_at, page_index=None, page_size=None):
         """
         参数名称     是否必须  类型    描述
@@ -315,8 +300,7 @@ class HuobiDM:
     
         request_path = '/api/v1/contract_order_detail'
         return api_key_post(self.__url, request_path, params, self.__access_key, self.__secret_key)
-    
-    
+
     # 获取合约当前未成交委托
     def get_contract_open_orders(self, symbol=None, page_index=None, page_size=None):
         """
@@ -336,8 +320,7 @@ class HuobiDM:
     
         request_path = '/api/v1/contract_openorders'
         return api_key_post(self.__url, request_path, params, self.__access_key, self.__secret_key)
-    
-    
+
     # 获取合约历史委托
     def get_contract_history_orders(self, symbol, trade_type, type, status, create_date,
                                     page_index=None, page_size=None):

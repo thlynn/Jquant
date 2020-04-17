@@ -15,6 +15,7 @@ import requests
 
 TIMEOUT = 5
 
+
 def http_get_request(url, params, add_to_headers=None):
     headers = {
         "Content-type": "application/x-www-form-urlencoded",
@@ -30,7 +31,7 @@ def http_get_request(url, params, add_to_headers=None):
         else:
             return {"status": "error", "err_msg": response.status_code}
     except Exception as e:
-        return {"status":"error", "err_msg": e}
+        return {"status": "error", "err_msg": e}
 
     
 def http_post_request(url, params, add_to_headers=None):
@@ -49,7 +50,7 @@ def http_post_request(url, params, add_to_headers=None):
         else:
             return {"status": "error", "err_msg": response.status_code}
     except Exception as e:
-        return {"status":"error", "err_msg": e}
+        return {"status": "error", "err_msg": e}
 
 
 def api_key_get(url, request_path, params, ACCESS_KEY, SECRET_KEY):

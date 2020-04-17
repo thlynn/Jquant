@@ -1,8 +1,9 @@
 import datetime
+from typing import Sequence
 
 import pandas as pd
 
-from model.BaseModel import Bar
+from model.BaseModel import Bar, OrderFuture
 
 
 class BaseStrategy:
@@ -11,6 +12,7 @@ class BaseStrategy:
         self.base_symbol = base_symbol
         self.quote_symbol = quote_symbol
         self.df_minute_bars: pd.DataFrame = None
+        self.orders: Sequence[OrderFuture] = list()
 
     def init_bars(self, bars):
         self.df_minute_bars = pd.DataFrame(data=[bar.__dict__ for bar in bars])
@@ -41,6 +43,9 @@ class BaseStrategy:
             pass
 
     def on_bar(self, bar: Bar):
+        pass
+
+    def on_order(self, response):
         pass
 
     def on_trade(self):
