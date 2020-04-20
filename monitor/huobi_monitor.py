@@ -14,7 +14,6 @@ class HUOBIOrderMonitor(MonitorBase):
 
     def run(self) -> None:
         while True:
-            # TODO: get updates of all orders
             for order in self.orders.values():
                 self.huobi_future_api.get_contract_order_info(order)
                 self.callback(order)
