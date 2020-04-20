@@ -24,6 +24,14 @@ class HUOBIFutureAPI(BaseAPI):
             err_msg = response['err_msg']
             return False
 
+    def cancel_contract_order(self, order: OrderFuture):
+        response = self.huobi_dm.cancel_contract_order(order.base_symbol, client_order_id=order.order_client_id)
+        if response['status'] == 'ok':
+            return True
+        else:
+            err_msg = response['err_msg']
+            return False
+
     def get_contract_order_info(self, order: OrderFuture):
         response = self.huobi_dm.get_contract_order_info(order.base_symbol, '', order.order_client_id)
         if response['status'] == 'ok':

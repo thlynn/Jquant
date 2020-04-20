@@ -1,5 +1,5 @@
 import datetime
-from typing import Sequence
+from typing import Sequence, Dict
 
 import pandas as pd
 
@@ -14,6 +14,7 @@ class BaseStrategy:
         self.lever_rate = lever_rate
         self.df_minute_bars: pd.DataFrame = None
         self.orders: Sequence[OrderFuture] = list()
+        self.orders_dict: Dict[str: OrderFuture] = dict()
 
     def init_bars(self, bars):
         self.df_minute_bars = pd.DataFrame(data=[bar.__dict__ for bar in bars])
@@ -33,15 +34,25 @@ class BaseStrategy:
 
         if bar_timestamp > last_bar.name:
             self.df_minute_bars.append(pd.DataFrame([bar.__dict__]).set_index('timestamp'))
+            return 'add'
         elif bar_timestamp == last_bar.name:
             last_bar['close_price'] = bar.close_price
             if last_bar['high_price'] < bar.high_price:
                 last_bar['high_price'] = bar.high_price
             if last_bar['low_price'] > bar.low_price:
                 last_bar['low_price'] = bar.low_price
+            return 'update'
         else:
             # TODO: raise exception
             pass
+
+        return 'error'
+
+    def place_contract_order(self, order: OrderFuture):
+        pass
+
+    def cancel_contract_order(self, order: OrderFuture):
+        pass
 
     def on_bar(self, bar: Bar):
         pass
