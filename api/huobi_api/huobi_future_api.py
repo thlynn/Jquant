@@ -1,5 +1,6 @@
 from api.base_api import BaseAPI
 from api.huobi_api.HuobiDMService import HuobiDM
+from core.exceptions import APIError
 from model.BaseModel import OrderFuture
 from datetime import datetime
 
@@ -53,5 +54,5 @@ class HUOBIFutureAPI(BaseAPI):
             order.trade_avg_price = data['trade_avg_price']
         else:
             err_msg = response['err_msg']
-            # TODO: raise exception
+            raise APIError(err_msg)
 

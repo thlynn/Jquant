@@ -3,6 +3,7 @@ from typing import Sequence, Dict
 
 import pandas as pd
 
+from core.exceptions import TimestampError
 from model.BaseModel import Bar, OrderFuture
 
 
@@ -43,10 +44,7 @@ class BaseStrategy:
                 last_bar['low_price'] = bar.low_price
             return 'update'
         else:
-            # TODO: raise exception
-            pass
-
-        return 'error'
+            raise TimestampError()
 
     def place_contract_order(self, order: OrderFuture):
         pass
