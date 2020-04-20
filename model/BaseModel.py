@@ -19,11 +19,11 @@ class OrderFuture:
     # open/close
     offset: str
     price: Decimal
-    volume: Decimal
+    volume: int
     # limit/market order
     order_type: str
     lever_rate: int
-    order_client_id: int
+    order_client_id: int = 0
     trade_volume: Decimal = Decimal('0')
     trade_avg_price: Decimal = Decimal('0')
     # pending  completed

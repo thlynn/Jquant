@@ -172,8 +172,8 @@ class HuobiDM:
 
     # 合约下单
     def send_contract_order(self, symbol, contract_type, contract_code, 
-                            client_order_id, price,volume,direction,offset,
-                            lever_rate,order_price_type):
+                            client_order_id, price, volume, direction, offset,
+                            lever_rate, order_price_type):
         """
         :symbol: "BTC","ETH"..
         :contract_type: "this_week", "next_week", "quarter"

@@ -8,9 +8,10 @@ from model.BaseModel import Bar, OrderFuture
 
 class BaseStrategy:
 
-    def __init__(self, base_symbol, quote_symbol):
+    def __init__(self, base_symbol, quote_symbol, lever_rate=1):
         self.base_symbol = base_symbol
         self.quote_symbol = quote_symbol
+        self.lever_rate = lever_rate
         self.df_minute_bars: pd.DataFrame = None
         self.orders: Sequence[OrderFuture] = list()
 
@@ -45,9 +46,5 @@ class BaseStrategy:
     def on_bar(self, bar: Bar):
         pass
 
-    def on_order(self, response):
+    def on_trade(self, response):
         pass
-
-    def on_trade(self):
-        pass
-
