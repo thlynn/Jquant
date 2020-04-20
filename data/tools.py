@@ -38,3 +38,8 @@ def atr(n, df):
     """
     result = talib.ATR(df.high_price, df.low_price, df.close_price, n)
     return result[-2]
+
+
+def calculate_pos_and_average_price(pos, average_price, volume, price):
+    average_price = (pos * average_price + volume * price)/(pos + volume)
+    return pos + volume, average_price
