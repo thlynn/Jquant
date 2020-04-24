@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from api.base_api import BaseAPI
 from api.huobi_api.HuobiDMService import HuobiDM
 from core.exceptions import APIError
@@ -52,8 +54,10 @@ class HUOBIFutureAPI(BaseAPI):
             elif order_status == 11:
                 order.order_status = 'cancelling'
 
-            order.trade_volume = data['trade_volume']
-            order.trade_avg_price = data['trade_avg_price']
+            order.trade_volume = int(data['trade_volume'])
+            trade_avg_price = data['trade_avg_price']
+            if trade_avg_price and not isinstance(trade_avg_price, Decimal):
+                order.trade_avg_price = Decimal(str(trade_avg_price))
         else:
             err_msg = response['err_msg']
             raise APIError(err_msg)

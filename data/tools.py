@@ -1,5 +1,7 @@
 import zlib
 import socket
+from decimal import Decimal
+
 import talib
 
 
@@ -41,5 +43,8 @@ def atr(n, df):
 
 
 def calculate_pos_and_average_price(pos, average_price, volume, price):
+    pos = Decimal(str(pos))
+    volume = Decimal(str(volume))
+
     average_price = (pos * average_price + volume * price)/(pos + volume)
-    return pos + volume, average_price
+    return int(pos + volume), average_price

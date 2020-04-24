@@ -8,14 +8,15 @@ import requests
 from websocket import create_connection
 from datetime import datetime
 
+from core.logger import get_logger
 from data.tools import inflate
 from model.BaseModel import Bar
 
 
 class Subscribe(threading.Thread):
 
-    def __init__(self, base_symbol, quote_symbol, intervals, name='', callback=None):
-        super().__init__(name=name)
+    def __init__(self, base_symbol, quote_symbol, intervals, callback=None):
+        super().__init__()
         self.base_symbol = base_symbol
         self.quote_symbol = quote_symbol
         self.timestamp = float
@@ -27,14 +28,24 @@ class Subscribe(threading.Thread):
         self.callback = callback
         self.intervals = intervals
 
+        self.logger = get_logger('subscribe')
+
 
 class SubscribeHUOBIFuture(Subscribe):
 
-    def __init__(self, base_symbol, quote_symbol, intervals, name='HUOBI', callback=None):
-        super().__init__(base_symbol, quote_symbol, intervals, name, callback)
+    def __init__(self, base_symbol, quote_symbol, intervals, future_type='CQ', callback=None):
+        super().__init__(base_symbol, quote_symbol, intervals, callback)
         self.ws_url = create_connection("wss://www.hbdm.com/ws")
+        self.future_type = future_type
 
     def run(self):
+
+        topic = {
+            "sub": f"market.{str.upper(self.base_symbol)}_{str.upper(self.future_type)}.kline.{self.intervals}",
+            "id": "id1"
+        }
+        self.ws_url.send(json.dumps(topic))
+
         while True:
             result = gzip.decompress(self.ws_url.recv()).decode('utf-8')
             json_obj = json.loads(result)
@@ -46,7 +57,7 @@ class SubscribeHUOBIFuture(Subscribe):
             elif 'ch' in json_obj.keys():
                 tick = json_obj['tick']
 
-                self.timestamp = tick['id']
+                self.timestamp = int(tick['id'])
                 self.open = Decimal(str(tick['open']))
                 self.close = Decimal(str(tick['close']))
                 self.low = Decimal(str(tick['low']))
@@ -56,14 +67,15 @@ class SubscribeHUOBIFuture(Subscribe):
                 if self.callback:
                     bar = Bar(
                         self.base_symbol, self.quote_symbol, self.name, self.intervals,
-                        self.open, self.high, self.low, self.close, self.amount)
+                        self.timestamp, self.open, self.high, self.low, self.close, self.amount)
+                    self.logger.debug(f'{bar.timestamp},{bar.close_price}')
                     self.callback(bar)
 
 
 class SubscribeHUOBI(Subscribe):
 
-    def __init__(self, base_symbol, quote_symbol, intervals, name='HUOBI', callback=None):
-        super().__init__(base_symbol, quote_symbol, intervals, name, callback)
+    def __init__(self, base_symbol, quote_symbol, intervals, callback=None):
+        super().__init__(base_symbol, quote_symbol, intervals, callback)
         self.ws_url = "wss://api.huobi.pro/ws"
 
     def run(self):
@@ -92,6 +104,8 @@ class SubscribeHUOBI(Subscribe):
                 self.high = Decimal(str(tick['high']))
                 self.amount = Decimal(str(tick['amount']))
 
+                self.logger.debug(f'{bar.timestamp},{bar.close_price}')
+
                 if self.callback:
                     bar = Bar(
                         self.base_symbol, self.quote_symbol, self.name, self.intervals,
@@ -101,8 +115,8 @@ class SubscribeHUOBI(Subscribe):
 
 class SubscribeEXMO(Subscribe):
 
-    def __init__(self, base_symbol, quote_symbol, name='EXMO'):
-        super().__init__(base_symbol, quote_symbol, name)
+    def __init__(self, base_symbol, quote_symbol):
+        super().__init__(base_symbol, quote_symbol)
         self.ticker_url = "https://api.exmo.com/v1/ticker/"
 
     def run(self):
@@ -121,8 +135,8 @@ class SubscribeEXMO(Subscribe):
 
 class SubscribeOKEXFuture(Subscribe):
 
-    def __init__(self, base_symbol, quote_symbol, intervals, name='OKEX', callback=None):
-        super().__init__(base_symbol, quote_symbol, intervals, name, callback)
+    def __init__(self, base_symbol, quote_symbol, intervals, callback=None):
+        super().__init__(base_symbol, quote_symbol, intervals, callback)
         self.ws_url = create_connection("wss://real.okex.com:8443/ws/v3")
 
     def run(self):

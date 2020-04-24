@@ -17,11 +17,8 @@ class HUOBIOrderMonitor(MonitorBase):
     def run(self) -> None:
         while True:
             for order in self.orders.values():
-                try:
-                    self.trade_api.get_contract_order_info(order)
-                except Exception:
-                    traceback.print_exc()
-                    continue
+                self.trade_api.get_contract_order_info(order)
+                self.logger.debug(f'{order.price},{order.offset},{order.direction}{order.volume},{order.order_status}')
                 self.callback(order)
                 time.sleep(1)
 
