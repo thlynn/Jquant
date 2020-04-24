@@ -5,3 +5,4 @@
 *.pyc
 **/key.ini
 /app_private
+*.log

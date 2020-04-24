@@ -27,7 +27,7 @@ class BaseStrategy:
         pass
 
     def update_bars(self, bar: Bar):
-        bar_timestamp = Bar.timestamp
+        bar_timestamp = bar.timestamp
         bar_datetime = datetime.datetime.fromtimestamp(bar_timestamp)
         bar_timestamp -= bar_datetime.second
         

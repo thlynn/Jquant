@@ -2,15 +2,13 @@ import time
 import traceback
 
 from api.huobi_api.huobi_future_api import HUOBIFutureAPI
-from model.BaseModel import OrderFuture
 from monitor.monitor_base import MonitorBase
-from typing import Sequence, Dict
 
 
 class HUOBIOrderMonitor(MonitorBase):
 
-    def __int__(self, orders: Dict[str: OrderFuture], callback):
-        super().__int__()
+    def __init__(self, orders, callback):
+        super().__init__()
         self.orders = orders
         self.callback = callback
         self.huobi_future_api = HUOBIFutureAPI()

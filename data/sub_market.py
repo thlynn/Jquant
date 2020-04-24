@@ -85,7 +85,7 @@ class SubscribeHUOBI(Subscribe):
                 ws.send(pong)
             elif 'ch' in json_obj.keys():
                 tick = json_obj['tick']
-                self.timestamp = tick['id']
+                self.timestamp = int(tick['id'])
                 self.open = Decimal(str(tick['open']))
                 self.close = Decimal(str(tick['close']))
                 self.low = Decimal(str(tick['low']))
@@ -95,7 +95,7 @@ class SubscribeHUOBI(Subscribe):
                 if self.callback:
                     bar = Bar(
                         self.base_symbol, self.quote_symbol, self.name, self.intervals,
-                        self.open, self.high, self.low, self.close, self.amount)
+                        self.timestamp, self.open, self.high, self.low, self.close, self.amount)
                     self.callback(bar)
 
 

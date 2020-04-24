@@ -2,5 +2,6 @@ import threading
 
 
 class MonitorBase(threading.Thread):
-    def __int__(self, **args):
-        pass
+
+    def __init__(self) -> None:
+        super().__init__()
