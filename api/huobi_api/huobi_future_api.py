@@ -1,16 +1,18 @@
 from api.base_api import BaseAPI
 from api.huobi_api.HuobiDMService import HuobiDM
 from core.exceptions import APIError
+from core.logger import get_logger
 from model.BaseModel import OrderFuture
 from datetime import datetime
 
 
 class HUOBIFutureAPI(BaseAPI):
 
-    def __int__(self):
-        super().__int__()
-        self.huobi_dm = HuobiDM()
+    def __init__(self, access_key, secret_key, base_url):
+        super().__init__(access_key, secret_key, base_url)
+        self.huobi_dm = HuobiDM(base_url, access_key, secret_key)
         self.client_order_id = int(datetime.timestamp(datetime.now()))
+        self.logger = get_logger('trade_api')
 
     def send_contract_order(self, order: OrderFuture, contract_type, contract_code):
         self.client_order_id += 1
@@ -22,7 +24,7 @@ class HUOBIFutureAPI(BaseAPI):
         if response['status'] == 'ok':
             return True
         else:
-            err_msg = response['err_msg']
+            self.logger.warn(response['err_msg'])
             return False
 
     def cancel_contract_order(self, order: OrderFuture):
@@ -30,7 +32,7 @@ class HUOBIFutureAPI(BaseAPI):
         if response['status'] == 'ok':
             return True
         else:
-            err_msg = response['err_msg']
+            self.logger.warn(response['err_msg'])
             return False
 
     def get_contract_order_info(self, order: OrderFuture):

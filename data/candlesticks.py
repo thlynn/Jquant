@@ -98,5 +98,5 @@ class HUOBIFutureHistory(BaseCandlestick):
         result = json.loads(res.content)
         if result['status'] == 'error':
             raise APIError(result['err-msg'])
-        self.response_data = json.loads(res.content)['data']
+        self.response_data = result['data']
 

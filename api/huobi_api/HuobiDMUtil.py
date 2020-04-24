@@ -13,6 +13,8 @@ import urllib
 import datetime
 import requests
 
+from model.BaseModel import EnhancedJSONEncoder
+
 TIMEOUT = 5
 
 
@@ -38,11 +40,11 @@ def http_post_request(url, params, add_to_headers=None):
     headers = {
         "Accept": "application/json",
         'Content-Type': 'application/json',
-        'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
     }
     if add_to_headers:
         headers.update(add_to_headers)
-    postdata = json.dumps(params)
+    postdata = json.dumps(params, cls=EnhancedJSONEncoder)
     try:
         response = requests.post(url, postdata, headers=headers, timeout=TIMEOUT)
         if response.status_code == 200:

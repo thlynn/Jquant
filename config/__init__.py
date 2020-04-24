@@ -2,14 +2,17 @@ import configparser
 import os
 
 
-class Keys():
-    config = configparser.ConfigParser()
-    config.read(os.path.dirname(os.path.abspath(__file__)) + '/key.ini', encoding='utf-8')
+class Keys:
 
-    URL = config['HUOBI']['URL']
-    ACCESS_KEY = config['HUOBI']['ACCESS_KEY']
-    SECRET_KEY = config['HUOBI']['SECRET_KEY']
+    def __init__(self):
+        self.config = configparser.ConfigParser()
+        self.config.read(os.path.dirname(os.path.abspath(__file__)) + '/key.ini', encoding='utf-8')
 
-    api_key = config['OKEX']['ACCESS_KEY']
-    seceret_key = config['OKEX']['SECRET_KEY']
-    passphrase = config['OKEX']['PASSPHRASE']
+    def get_key(self, name):
+        access_key = self.config[name]['ACCESS_KEY']
+        secret_key = self.config[name]['SECRET_KEY']
+        return access_key, secret_key
+
+    def get_base_url(self, name):
+        url = self.config[name]['URL']
+        return url

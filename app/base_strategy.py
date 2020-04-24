@@ -23,6 +23,8 @@ class BaseStrategy:
         self.df_minute_bars.set_index('timestamp', inplace=True)
         self.df_minute_bars.sort_index(inplace=True)
 
+        self.calculate_parameters()
+
     def calculate_parameters(self):
         pass
 
@@ -32,8 +34,7 @@ class BaseStrategy:
         bar_timestamp -= bar_datetime.second
         
         last_bar = self.df_minute_bars.iloc[-1]
-
-        if bar_timestamp > last_bar.name:
+        if bar_timestamp > int(datetime.datetime.timestamp(last_bar.name)):
             self.df_minute_bars.append(pd.DataFrame([bar.__dict__]).set_index('timestamp'))
             return 'add'
         elif bar_timestamp == last_bar.name:
