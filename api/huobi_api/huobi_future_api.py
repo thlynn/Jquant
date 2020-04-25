@@ -1,8 +1,8 @@
+import time
 from decimal import Decimal
 
 from api.base_api import BaseAPI
 from api.huobi_api.HuobiDMService import HuobiDM
-from core.exceptions import APIError
 from core.logger import get_logger
 from model.BaseModel import OrderFuture
 from datetime import datetime
@@ -19,6 +19,10 @@ class HUOBIFutureAPI(BaseAPI):
     def send_contract_order(self, order: OrderFuture, contract_type, contract_code):
         self.client_order_id += 1
         order.order_client_id = self.client_order_id
+
+        self.logger.info(f'''Place Order:{order.order_client_id};
+            price:{order.price};volume:{order.volume};offset:{order.offset};direction:{order.direction}''')
+
         response = self.huobi_dm.send_contract_order(
             order.base_symbol, contract_type, contract_code,
             self.client_order_id, order.price, order.volume,
@@ -27,14 +31,18 @@ class HUOBIFutureAPI(BaseAPI):
             return True
         else:
             self.logger.warn(response['err_msg'])
+            time.sleep(1)
             return False
 
     def cancel_contract_order(self, order: OrderFuture):
+        self.logger.info(f'Cancel Order:{order.order_client_id}')
+
         response = self.huobi_dm.cancel_contract_order(order.base_symbol, client_order_id=order.order_client_id)
         if response['status'] == 'ok':
             return True
         else:
             self.logger.warn(response['err_msg'])
+            time.sleep(1)
             return False
 
     def get_contract_order_info(self, order: OrderFuture):
@@ -58,7 +66,13 @@ class HUOBIFutureAPI(BaseAPI):
             trade_avg_price = data['trade_avg_price']
             if trade_avg_price and not isinstance(trade_avg_price, Decimal):
                 order.trade_avg_price = Decimal(str(trade_avg_price))
+
+            self.logger.info(f'''Order Status:{order.order_client_id};
+                trade_volume:{order.trade_volume};trade_avg_price:{order.trade_avg_price};
+                status:{order.order_status}''')
+
+            return True
         else:
-            err_msg = response['err_msg']
-            raise APIError(err_msg)
+            self.logger.warn(response['err_msg'])
+            return False
 

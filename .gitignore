@@ -7,3 +7,4 @@
 /app_private
 *.log
 *.log.*
+test_run.py
