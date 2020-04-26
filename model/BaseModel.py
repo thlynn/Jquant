@@ -26,7 +26,7 @@ class OrderFuture:
     order_client_id: int = 0
     trade_volume: Decimal = Decimal('0')
     trade_avg_price: Decimal = Decimal('0')
-    # pending  completed deleted
+    # pending  completed
     order_status: str = 'pending'
 
 

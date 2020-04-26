@@ -21,7 +21,7 @@ class HUOBIFutureAPI(BaseAPI):
         order.order_client_id = self.client_order_id
 
         self.logger.info(f'''Place Order:{order.order_client_id};
-            price:{order.price};volume:{order.volume};offset:{order.offset};direction:{order.direction}''')
+            price:{order.price};volume:{order.volume};order_type:{order.order_type};offset:{order.offset};direction:{order.direction}''')
 
         response = self.huobi_dm.send_contract_order(
             order.base_symbol, contract_type, contract_code,
