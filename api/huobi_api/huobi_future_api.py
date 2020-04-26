@@ -67,6 +67,8 @@ class HUOBIFutureAPI(BaseAPI):
             if trade_avg_price and not isinstance(trade_avg_price, Decimal):
                 order.trade_avg_price = Decimal(str(trade_avg_price))
 
+            order.created = data['created_at']
+
             self.logger.info(f'''Order Status:{order.order_client_id};
                 trade_volume:{order.trade_volume};trade_avg_price:{order.trade_avg_price};
                 status:{order.order_status}''')

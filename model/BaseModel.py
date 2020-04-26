@@ -28,6 +28,7 @@ class OrderFuture:
     trade_avg_price: Decimal = Decimal('0')
     # pending  completed
     order_status: str = 'pending'
+    created: int = 0
 
 
 @dataclass()
