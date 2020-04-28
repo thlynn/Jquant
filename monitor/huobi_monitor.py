@@ -17,9 +17,8 @@ class HUOBIOrderMonitor(MonitorBase):
         while True:
             for order in self.orders.values():
                 if order:
-                    result = self.trade_api.get_contract_order_info(order)
-                    if result:
-                        self.callback(order)
+                    self.trade_api.get_contract_order_info(order)
+                    self.callback(order)
                     time.sleep(1)
             time.sleep(1)
 

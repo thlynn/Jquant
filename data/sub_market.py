@@ -35,25 +35,34 @@ class SubscribeHUOBIFuture(Subscribe):
 
     def __init__(self, base_symbol, quote_symbol, intervals, future_type='CQ', callback=None):
         super().__init__(base_symbol, quote_symbol, intervals, callback)
-        self.ws_url = create_connection("wss://www.hbdm.com/ws")
+        self.ws_url = "wss://www.hbdm.com/ws"
         self.future_type = future_type
 
     def run(self):
-
+        ws = None
+        while not ws:
+            try:
+                ws = create_connection(self.ws_url)
+            except Exception as e:
+                self.logger.error(e)
         topic = {
             "sub": f"market.{str.upper(self.base_symbol)}_{str.upper(self.future_type)}.kline.{self.intervals}",
             "id": "id1"
         }
-        self.ws_url.send(json.dumps(topic))
+        ws.send(json.dumps(topic))
 
         while True:
-            result = gzip.decompress(self.ws_url.recv()).decode('utf-8')
+            try:
+                result = gzip.decompress(ws.recv()).decode('utf-8')
+            except Exception as e:
+                self.logger.error(e)
+                break
             json_obj = json.loads(result)
             if json_obj.get('status') == 'error':
                 pass
             elif 'ping' in json_obj.keys():
                 pong = '{"pong":'+str(json_obj['ping'])+'}'
-                self.ws_url.send(pong)
+                ws.send(pong)
             elif 'ch' in json_obj.keys():
                 tick = json_obj['tick']
 

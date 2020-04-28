@@ -30,8 +30,10 @@ class HUOBIFutureAPI(BaseAPI):
         if response['status'] == 'ok':
             return True
         else:
-            self.logger.warn(response['err_msg'])
-            time.sleep(1)
+            err_code = response.get('err_code', 0)
+            self.logger.warn(f"order_client_id:{order.order_client_id};err_code:{err_code};err_msg:{response['err_msg']}")
+            if err_code == 1301:
+                self.huobi_dm.cancel_all_contract_order(str.upper(order.base_symbol))
             return False
 
     def cancel_contract_order(self, order: OrderFuture):
@@ -75,6 +77,9 @@ class HUOBIFutureAPI(BaseAPI):
 
             return True
         else:
-            self.logger.warn(response['err_msg'])
+            err_code = response.get('err_code', 0)
+            self.logger.warn(f"order_client_id:{order.order_client_id};err_code:{err_code};err_msg:{response['err_msg']}")
+            if err_code == 1017:
+                order.order_status = 'not_exit'
             return False
 
