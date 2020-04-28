@@ -52,11 +52,7 @@ class SubscribeHUOBIFuture(Subscribe):
         ws.send(json.dumps(topic))
 
         while True:
-            try:
-                result = gzip.decompress(ws.recv()).decode('utf-8')
-            except Exception as e:
-                self.logger.error(e)
-                break
+            result = gzip.decompress(ws.recv()).decode('utf-8')
             json_obj = json.loads(result)
             if json_obj.get('status') == 'error':
                 pass
