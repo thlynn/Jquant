@@ -6,7 +6,7 @@ import pytz
 
 from core.exceptions import TimestampError
 from core.logger import get_logger
-from model.BaseModel import Bar, OrderFuture
+from model.BaseModel import Bar
 
 
 class BaseStrategy:
@@ -16,8 +16,8 @@ class BaseStrategy:
         self.quote_symbol = quote_symbol
         self.lever_rate = lever_rate
         self.df_minute_bars: pd.DataFrame = None
-        self.orders: Sequence[OrderFuture] = list()
-        self.orders_dict: Dict[str: OrderFuture] = dict()
+        self.orders: Sequence[object] = list()
+        self.orders_dict: Dict[str: object] = dict()
         # logger
         self.logger = get_logger('strategy')
 
@@ -55,10 +55,10 @@ class BaseStrategy:
             self.logger.error(f'last_bar_timestamp:{last_bar_timestamp},bar_timestamp:{bar_timestamp}')
             raise TimestampError()
 
-    def place_contract_order(self, order: OrderFuture):
+    def place_contract_order(self, order: object):
         pass
 
-    def cancel_contract_order(self, order: OrderFuture):
+    def cancel_contract_order(self, order: object):
         pass
 
     def on_bar(self, bar: Bar):
