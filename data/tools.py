@@ -31,7 +31,7 @@ def donchian(n, df):
     """
     up = talib.MAX(df.high_price, n)
     down = talib.MIN(df.low_price, n)
-    return up[-2], down[-2]
+    return Decimal(str(up[-2])), Decimal(str(down[-2]))
 
 
 def atr(n, df):
