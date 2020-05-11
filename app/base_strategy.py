@@ -11,13 +11,16 @@ from model.BaseModel import Bar
 
 class BaseStrategy:
 
-    def __init__(self, base_symbol, quote_symbol, lever_rate=1):
+    def __init__(self, base_symbol, quote_symbol, trade_api, lever_rate=1):
         self.base_symbol = base_symbol
         self.quote_symbol = quote_symbol
         self.lever_rate = lever_rate
         self.df_minute_bars: pd.DataFrame = None
         self.orders: Sequence[object] = list()
         self.orders_dict: Dict[str: object] = dict()
+
+        self.trade_api = trade_api
+
         # logger
         self.logger = get_logger('strategy')
 
@@ -28,6 +31,8 @@ class BaseStrategy:
         self.df_minute_bars.sort_index(inplace=True)
 
         self.calculate_parameters()
+
+        self.logger.info('history data initialized')
 
     def calculate_parameters(self):
         pass
