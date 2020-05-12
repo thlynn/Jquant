@@ -10,13 +10,18 @@ from datetime import datetime
 
 class HUOBIFutureAPI(BaseAPI):
 
-    def __init__(self, access_key, secret_key, base_url):
-        super().__init__(access_key, secret_key, base_url)
+    def __init__(self, access_key, secret_key, base_url, contract_type, contract_code):
+        super().__init__()
+        self.base_url = base_url
         self.huobi_dm = HuobiDM(base_url, access_key, secret_key)
         self.client_order_id = int(datetime.timestamp(datetime.now()))
+
+        self.contract_type = contract_type
+        self.contract_code = contract_code
+
         self.logger = get_logger('trade_api')
 
-    def send_contract_order(self, order: OrderFuture, contract_type, contract_code):
+    def send_contract_order(self, order: OrderFuture):
         self.client_order_id += 1
         order.order_client_id = self.client_order_id
 
@@ -24,7 +29,7 @@ class HUOBIFutureAPI(BaseAPI):
             price:{order.price};volume:{order.volume};order_type:{order.order_type};offset:{order.offset};direction:{order.direction}''')
 
         response = self.huobi_dm.send_contract_order(
-            order.base_symbol, contract_type, contract_code,
+            order.base_symbol, self.contract_type, self.contract_code,
             self.client_order_id, order.price, order.volume,
             order.direction, order.offset, order.lever_rate, order.order_type)
         if response['status'] == 'ok':
