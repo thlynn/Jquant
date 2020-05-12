@@ -13,10 +13,6 @@ class Run(ABC):
     def proceed(self):
         strategy = self.instantiate_strategy()
 
-        history = self.instantiate_history()
-
-        strategy.init_bars(history.get_bars(1000))
-
         monitor = None
         subscribe = None
 

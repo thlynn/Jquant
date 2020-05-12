@@ -17,15 +17,12 @@ class BaseCandlestick(ABC):
         super().__init__()
 
     @abstractmethod
-    def get_bars(self, numbers):
+    def get_bars(self, numbers, begin=None, end=None):
         pass
 
     @abstractmethod
-    def get_close(self, numbers):
+    def get_close(self, numbers, begin=None, end=None):
         pass
-
-    def to_json(self):
-        return json.dumps(self.bars, cls=EnhancedJSONEncoder)
 
 
 class HUOBIHistory(BaseCandlestick):
@@ -35,9 +32,9 @@ class HUOBIHistory(BaseCandlestick):
         self.base_url = 'https://api.huobi.pro/market/history/kline'
         self.response_data = None
 
-    def get_bars(self, numbers):
+    def get_bars(self, numbers, begin=None, end=None):
         if not self.response_data:
-            self.req_data(numbers)
+            self.req_data(numbers, begin, end)
         bars = list()
         for item in self.response_data:
             bar = Bar(
@@ -47,7 +44,7 @@ class HUOBIHistory(BaseCandlestick):
             bars.append(bar)
         return bars
 
-    def get_close(self, numbers):
+    def get_close(self, numbers, begin=None, end=None):
         if not self.response_data:
             self.req_data(numbers)
         close_prices = list()
@@ -55,7 +52,7 @@ class HUOBIHistory(BaseCandlestick):
             close_prices.append(Decimal(str(item['close'])))
         return close_prices
 
-    def req_data(self, numbers):
+    def req_data(self, numbers, begin=None, end=None):
         req_str = f'{self.base_url}?period={self.intervals}&size={numbers}&symbol={self.base_symbol}{self.quote_symbol}'
         res = requests.get(req_str)
         result = json.loads(res.content)
@@ -72,9 +69,9 @@ class HUOBIFutureHistory(BaseCandlestick):
         self.response_data = None
         self.future_type = future_type
 
-    def get_bars(self, numbers):
+    def get_bars(self, numbers, begin=None, end=None):
         if not self.response_data:
-            self.req_data(numbers)
+            self.req_data(numbers, begin, end)
         bars = list()
         for item in self.response_data:
             bar = Bar(
@@ -84,16 +81,19 @@ class HUOBIFutureHistory(BaseCandlestick):
             bars.append(bar)
         return bars
 
-    def get_close(self, numbers):
+    def get_close(self, numbers, begin=None, end=None):
         if not self.response_data:
-            self.req_data(numbers)
+            self.req_data(numbers, begin, end)
         close_prices = list()
         for item in self.response_data:
             close_prices.append(Decimal(str(item['close'])))
         return close_prices
 
-    def req_data(self, numbers):
-        req_str = f'{self.base_url}?period={self.intervals}&size={numbers}&symbol={str.upper(self.base_symbol)}_{str.upper(self.future_type)}'
+    def req_data(self, numbers, begin=None, end=None):
+        if begin and end:
+            req_str = f'{self.base_url}?period={self.intervals}&from={begin}&to={end}&symbol={str.upper(self.base_symbol)}_{str.upper(self.future_type)}'
+        else:
+            req_str = f'{self.base_url}?period={self.intervals}&size={numbers}&symbol={str.upper(self.base_symbol)}_{str.upper(self.future_type)}'
         res = requests.get(req_str)
         result = json.loads(res.content)
         if result['status'] == 'error':
