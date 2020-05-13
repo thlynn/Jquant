@@ -9,7 +9,7 @@ from data.tools import calculate_pos_and_average_price
 from model.BaseModel import OrderFuture
 
 
-class TestBackAPI(BaseAPI):
+class BackTestAPI(BaseAPI):
 
     def __init__(self):
         super().__init__()

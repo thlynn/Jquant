@@ -54,6 +54,7 @@ class HUOBIFutureAPI(BaseAPI):
             return False
 
     def get_contract_order_info(self, order: OrderFuture):
+        time.sleep(1)
         response = self.huobi_dm.get_contract_order_info(order.base_symbol, '', order.order_client_id)
         if response['status'] == 'ok':
             data = response['data'][0]

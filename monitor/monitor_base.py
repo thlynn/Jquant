@@ -1,5 +1,4 @@
 import threading
-import time
 
 from api.base_api import BaseAPI
 
@@ -15,9 +14,10 @@ class MonitorBase(threading.Thread):
 
     def run(self) -> None:
         while True:
-            for order in self.orders.values():
-                if order:
-                    self.trade_api.get_contract_order_info(order)
-                    self.callback(order)
-                    time.sleep(1)
-            time.sleep(1)
+            self.monitor_order()
+
+    def monitor_order(self):
+        for order in self.orders.values():
+            if order:
+                self.trade_api.get_contract_order_info(order)
+                self.callback(order)

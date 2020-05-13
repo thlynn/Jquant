@@ -25,7 +25,7 @@ class BaseStrategy:
         self.logger = get_logger('strategy')
 
     def init_bars(self, bars):
-        self.df_minute_bars = pd.DataFrame(data=[bar.__dict__ for bar in bars])
+        self.df_minute_bars = pd.DataFrame(data=bars)
         self.df_minute_bars.drop_duplicates(inplace=True)
         self.df_minute_bars.set_index('timestamp', inplace=True)
         self.df_minute_bars.sort_index(inplace=True)
