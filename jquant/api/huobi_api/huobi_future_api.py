@@ -4,7 +4,7 @@ from decimal import Decimal
 from api.base_api import BaseAPI
 from api.huobi_api.HuobiDMService import HuobiDM
 from core.logger import get_logger
-from model.BaseModel import OrderFuture
+from jquant.model.BaseModel import OrderFuture
 from datetime import datetime
 
 

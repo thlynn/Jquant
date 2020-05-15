@@ -6,7 +6,7 @@ import pytz
 from api.base_api import BaseAPI
 from core.logger import get_logger
 from data.tools import calculate_pos_and_average_price
-from model.BaseModel import OrderFuture
+from jquant.model.BaseModel import OrderFuture
 
 
 class BackTestAPI(BaseAPI):

@@ -1,4 +1,4 @@
-from model.BaseModel import OrderFuture
+from jquant.model.BaseModel import OrderFuture
 
 
 class BaseAPI:

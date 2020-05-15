@@ -7,7 +7,7 @@ import requests
 from pytz import timezone
 
 from data.candlesticks import BaseCandlestick
-from model.BaseModel import Bar
+from jquant.model.BaseModel import Bar
 
 
 class EXMOCandlestick(BaseCandlestick):

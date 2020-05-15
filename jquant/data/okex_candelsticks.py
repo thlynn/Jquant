@@ -1,7 +1,6 @@
-import json
 from datetime import datetime
 from datetime import timedelta
-from model.BaseModel import Bar, Exchange
+from jquant.model.BaseModel import Bar, Exchange
 import api.okex.futures_api as future
 from config import Keys
 

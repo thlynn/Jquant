@@ -13,7 +13,7 @@ import urllib
 import datetime
 import requests
 
-from model.BaseModel import EnhancedJSONEncoder
+from jquant.model.BaseModel import EnhancedJSONEncoder
 
 TIMEOUT = 5
 

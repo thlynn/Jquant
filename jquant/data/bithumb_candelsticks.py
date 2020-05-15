@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from data.candlesticks import BaseCandlestick
-from model.BaseModel import Bar
+from jquant.model.BaseModel import Bar
 
 
 class BithumbCandlestick(BaseCandlestick):
