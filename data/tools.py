@@ -39,7 +39,7 @@ def atr(n, df):
     Average True Range (ATR).
     """
     result = talib.ATR(df.high_price, df.low_price, df.close_price, n)
-    return result[-2]
+    return Decimal(str(result[-2]))
 
 
 def calculate_pos_and_average_price(pos, average_price, volume, price):
