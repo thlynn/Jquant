@@ -7,4 +7,5 @@
 /jquant/app_private
 *.log
 *.log.*
+/log
 test_run.py
