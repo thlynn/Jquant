@@ -5,7 +5,7 @@ from decimal import Decimal
 from websocket import create_connection
 
 from data.sub_market import Subscribe
-from jquant.model.BaseModel import Bar
+from model.BaseModel import Bar
 
 
 class SubscribeHUOBIFuture(Subscribe):

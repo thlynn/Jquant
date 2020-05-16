@@ -1,6 +1,6 @@
 from datetime import datetime
 from datetime import timedelta
-from jquant.model.BaseModel import Bar, Exchange
+from model.BaseModel import Bar, Exchange
 import api.okex.futures_api as future
 from config import Keys
 

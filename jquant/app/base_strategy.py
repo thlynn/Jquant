@@ -6,7 +6,7 @@ import pytz
 
 from core.exceptions import TimestampError
 from core.logger import get_logger
-from jquant.model.BaseModel import Bar
+from model.BaseModel import Bar
 
 
 class BaseStrategy:
