@@ -7,8 +7,8 @@ from app_private.turtle.turtle_run import TurtleRun
 from app_private.turtle.turtle_run_back_test import TurtleRunBackTest
 from data.huobi_candlesticks import HUOBIFutureHistory
 
-os.environ['HTTP_PROXY'] = "http://127.0.0.1:1082"
-os.environ['HTTPS_PROXY'] = "https://127.0.0.1:1082"
+# os.environ['HTTP_PROXY'] = "http://127.0.0.1:1082"
+# os.environ['HTTPS_PROXY'] = "https://127.0.0.1:1082"
 
 
 def get_huobi_future_data():
