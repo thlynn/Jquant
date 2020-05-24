@@ -47,10 +47,11 @@ if __name__ == "__main__":
     pos = 5
     intervals = '1min'
 
-    # run = TurtleRunBackTest(
-    #     base_symbol, quote_symbol, pos, intervals, '../csv/huobi_future_test_365days.csv', '/var/back_test_results_entry75.csv')
+    run = TurtleRunBackTest(
+        base_symbol, quote_symbol, pos, intervals,
+        '/var/csv/huobi_future_test_7days.csv', '/var/back_test_result/back_test_results_entry_Test_4.csv')
 
-    run = TurtleRun(base_symbol, quote_symbol, pos, intervals)
+    # run = TurtleRun(base_symbol, quote_symbol, pos, intervals)
 
     run.proceed()
 

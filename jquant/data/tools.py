@@ -1,6 +1,7 @@
 import zlib
 import socket
 from decimal import Decimal
+import numpy as np
 
 import talib
 
@@ -25,20 +26,20 @@ def get_host_ip():
     return ip
 
 
-def donchian(n, df):
+def donchian(n, bars):
     """
     Donchian Channel.
     """
-    up = talib.MAX(df.high_price, n)
-    down = talib.MIN(df.low_price, n)
+    up = talib.MAX(np.array(bars['high']), n)
+    down = talib.MIN(np.array(bars['low']), n)
     return Decimal(str(up[-2])), Decimal(str(down[-2]))
 
 
-def atr(n, df):
+def atr(n, bars):
     """
     Average True Range (ATR).
     """
-    result = talib.ATR(df.high_price, df.low_price, df.close_price, n)
+    result = talib.ATR(bars['high'], bars['low'], bars['close'], n)
     return Decimal(str(result[-2]))
 
 

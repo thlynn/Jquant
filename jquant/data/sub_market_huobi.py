@@ -95,10 +95,13 @@ class SubscribeHUOBI(Subscribe):
 
 class SubscribeHUOBIFutureBackTest(Subscribe):
 
-    def __init__(self, base_symbol, quote_symbol, intervals, back_test_bars, monitor, future_type='CQ', callback=None):
+    def __init__(
+            self, base_symbol, quote_symbol, intervals,
+            back_test_bars, monitor, api_callback, callback):
         super().__init__(base_symbol, quote_symbol, intervals, callback)
         self.back_test_bars = back_test_bars
         self.monitor = monitor
+        self.api_callback = api_callback
 
     def run(self):
         for i in range(len(self.back_test_bars)):
@@ -106,11 +109,13 @@ class SubscribeHUOBIFutureBackTest(Subscribe):
 
             if self.callback:
                 bar = Bar(
-                    self.base_symbol, self.quote_symbol, self.name, self.intervals,
+                    self.base_symbol, self.quote_symbol, 'HUOBI', self.intervals,
                     bar.timestamp, bar.open_price, bar.high_price, bar.low_price, bar.close_price, bar.amount)
 
                 self.logger.debug(f'{bar.timestamp},{bar.close_price}')
 
                 self.callback(bar)
+
+                self.api_callback(bar)
 
                 self.monitor.monitor_order()

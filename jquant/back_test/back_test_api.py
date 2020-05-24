@@ -6,7 +6,7 @@ import pytz
 from api.base_api import BaseAPI
 from core.logger import get_logger
 from data.tools import calculate_pos_and_average_price
-from model.BaseModel import OrderFuture
+from model.BaseModel import OrderFuture, Bar
 
 
 class BackTestAPI(BaseAPI):
@@ -69,6 +69,7 @@ class BackTestAPI(BaseAPI):
         order_info['profit'] = profit
 
         self.orders.append(order_info)
+        self.uncompleted_orders.pop(order.order_client_id, None)
 
         return True
 
@@ -85,4 +86,11 @@ class BackTestAPI(BaseAPI):
 
         return True
 
-
+    def on_bar(self, bar: Bar):
+        for order in self.uncompleted_orders.values():
+            if order.direction == 'buy' and bar.close_price <= order.price:
+                self.complete_order(order)
+                break
+            elif order.direction == 'sell' and bar.close_price >= order.price:
+                self.complete_order(order)
+                break
