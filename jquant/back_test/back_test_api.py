@@ -44,6 +44,15 @@ class BackTestAPI(BaseAPI):
         price = order.price
         volume = order.volume
 
+        # slippage
+        if direction == 'buy':
+            price += Decimal(10)
+        elif direction == 'sell':
+            price -= Decimal(10)
+
+        order.trade_volume = order.volume
+        order.trade_avg_price = price
+
         self.logger.info(f'''Complete Order:
             price:{price};volume:{volume};order_type:{order.order_type};offset:{offset};direction:{direction}''')
 
@@ -68,6 +77,7 @@ class BackTestAPI(BaseAPI):
         order_info = order.__dict__
         order_info['fee'] = fee
         order_info['profit'] = profit
+        order_info['account'] = profit - fee
 
         self.orders.append(order_info)
         self.uncompleted_orders.pop(order.order_client_id, None)
@@ -86,9 +96,6 @@ class BackTestAPI(BaseAPI):
         stored_order = self.completed_orders.get(order.order_client_id, None)
         if stored_order and stored_order.order_status == 'fully_matched':
             order.order_status = 'fully_matched'
-            order.trade_volume = order.volume
-            order.trade_avg_price = order.price
-
         return True
 
     def on_bar(self, bar: Bar):

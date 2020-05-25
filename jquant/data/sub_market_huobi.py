@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from websocket import create_connection
 
+from app.base_strategy import BaseStrategy
 from data.sub_market import Subscribe
 from model.BaseModel import Bar
 
@@ -97,16 +98,14 @@ class SubscribeHUOBIFutureBackTest(Subscribe):
 
     def __init__(
             self, base_symbol, quote_symbol, intervals,
-            back_test_bars, monitor, api_callback, callback):
-        super().__init__(base_symbol, quote_symbol, intervals, callback)
+            back_test_bars, monitor, strategy:BaseStrategy, api_callback):
+        super().__init__(base_symbol, quote_symbol, intervals, strategy.on_bar)
         self.back_test_bars = back_test_bars
         self.monitor = monitor
         self.api_callback = api_callback
 
     def run(self):
-        for i in range(len(self.back_test_bars)):
-            bar = self.back_test_bars.iloc[i]
-
+        for index, bar in self.back_test_bars.iterrows():
             if self.callback:
                 bar = Bar(
                     self.base_symbol, self.quote_symbol, 'HUOBI', self.intervals,
