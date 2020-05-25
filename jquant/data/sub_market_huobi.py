@@ -112,8 +112,6 @@ class SubscribeHUOBIFutureBackTest(Subscribe):
                     self.base_symbol, self.quote_symbol, 'HUOBI', self.intervals,
                     bar.timestamp, bar.open_price, bar.high_price, bar.low_price, bar.close_price, bar.amount)
 
-                self.logger.debug(f'{bar.timestamp},{bar.close_price}')
-
                 self.callback(bar)
 
                 self.api_callback(bar)

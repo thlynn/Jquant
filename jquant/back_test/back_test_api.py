@@ -16,6 +16,7 @@ class BackTestAPI(BaseAPI):
         self.logger = get_logger('test_back_api')
         self.orders = list()
         self.uncompleted_orders = dict()
+        self.completed_orders = dict()
         self.long_pos = {'volume': 0, 'price': Decimal('0')}
         self.short_pos = {'volume': 0, 'price': Decimal('0')}
         self.fee_rate = Decimal('0.0003')
@@ -71,6 +72,8 @@ class BackTestAPI(BaseAPI):
         self.orders.append(order_info)
         self.uncompleted_orders.pop(order.order_client_id, None)
 
+        self.completed_orders[order.order_client_id] = order
+
         return True
 
     def cancel_contract_order(self, order: OrderFuture):
@@ -80,7 +83,9 @@ class BackTestAPI(BaseAPI):
         return True
 
     def get_contract_order_info(self, order: OrderFuture):
-        if order.order_status == 'fully_matched':
+        stored_order = self.completed_orders.get(order.order_client_id, None)
+        if stored_order and stored_order.order_status == 'fully_matched':
+            order.order_status = 'fully_matched'
             order.trade_volume = order.volume
             order.trade_avg_price = order.price
 

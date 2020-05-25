@@ -30,8 +30,8 @@ def donchian(n, bars):
     """
     Donchian Channel.
     """
-    up = talib.MAX(np.array(bars['high']), n)
-    down = talib.MIN(np.array(bars['low']), n)
+    up = talib.MAX(bars['high'], n)
+    down = talib.MIN(bars['low'], n)
     return Decimal(str(up[-2])), Decimal(str(down[-2]))
 
 

@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     run = TurtleRunBackTest(
         base_symbol, quote_symbol, pos, intervals,
-        '/var/csv/huobi_future_test_7days.csv', '/var/back_test_result/back_test_results_entry_Test_4.csv')
+        '/var/csv/huobi_future_test_365days.csv', '/var/back_test_result/btr_entry55_exit20_atr55.csv')
 
     # run = TurtleRun(base_symbol, quote_symbol, pos, intervals)
 
