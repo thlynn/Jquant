@@ -32,15 +32,13 @@ class HUOBIFutureAPI(BaseAPI):
             order.base_symbol, self.contract_type, self.contract_code,
             self.client_order_id, order.price, order.volume,
             order.direction, order.offset, order.lever_rate, order.order_type)
-        if response['status'] == 'ok':
-            return True
-        else:
+
+        if response['status'] != 'ok':
             err_code = response.get('err_code', 0)
             self.logger.warn(f"order_client_id:{order.order_client_id};err_code:{err_code};err_msg:{response['err_msg']}")
             # Insufficient close amount available
             if err_code == 1048:
                 self.huobi_dm.cancel_all_contract_order(str.upper(order.base_symbol))
-            return False
 
     def cancel_contract_order(self, order: OrderFuture):
         self.logger.info(f'Cancel Order:{order.order_client_id}')
