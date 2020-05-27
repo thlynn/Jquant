@@ -12,10 +12,9 @@ from data.huobi_candlesticks import HUOBIFutureHistory
 # os.environ['HTTP_PROXY'] = "http://127.0.0.1:1082"
 # os.environ['HTTPS_PROXY'] = "https://127.0.0.1:1082"
 
-
-def run_back_test(entry_, exit_, atr_):
-    run = TurtleRunBackTest('BTC', 'USDT', 5, '1min', entry_, exit_, atr_)
-    return run.proceed()
+bars = pd.read_csv('/var/csv/huobi_future_test_365days.csv')
+init_bars = bars.iloc[:2000]
+back_test_bars = bars.iloc[2000:]
 
 
 def get_huobi_future_data():
@@ -45,22 +44,28 @@ def get_huobi_future_data():
     df.to_csv('data/csv/huobi_future_test_7days.csv')
 
 
+def run_back_test(attrs):
+    run = TurtleRunBackTest('BTC', 'USDT', 5, '1min', attrs[0], attrs[1], attrs[2 ], init_bars)
+    print(run.proceed_back_test())
+
+
 if __name__ == "__main__":
     # run = TurtleRun('BTC', 'USDT', 5, '1min')
 
-    # entry_window = (40, 100, 5)
-    # exit_window = (10, 40, 5)
-    # atr_window = (20, 100, 10)
+    entry_window = (40, 100, 5)
+    exit_window = (10, 40, 5)
+    atr_window = (20, 100, 10)
 
-    entry_window = (40, 50, 5)
-    exit_window = (10, 20, 5)
-    atr_window = (20, 40, 10)
+    # entry_window = (40, 50, 5)
+    # exit_window = (10, 20, 5)
+    # atr_window = (20, 40, 10)
 
     test_list = [range(*entry_window), range(*exit_window), range(*atr_window)]
+    # processes = [multiprocessing.Process(target=run_back_test, args=i) for i in list(itertools.product(*test_list))]
+    # for p in processes:
+    #     p.start()
+    # for p in processes:
+    #     p.join()
 
-    processes = [multiprocessing.Process(target=run_back_test, args=i) for i in list(itertools.product(*test_list))]
-    for p in processes:
-        p.start()
-    for p in processes:
-        p.join()
-    print([p.get() for p in processes])
+    with multiprocessing.Pool(5) as p:
+        print(p.map(run_back_test, list(itertools.product(*test_list))))

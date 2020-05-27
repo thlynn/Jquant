@@ -98,14 +98,13 @@ class SubscribeHUOBIFutureBackTest(Subscribe):
 
     def __init__(
             self, base_symbol, quote_symbol, intervals,
-            back_test_bars, monitor, strategy:BaseStrategy, api_callback):
+            monitor, strategy:BaseStrategy, api_callback):
         super().__init__(base_symbol, quote_symbol, intervals, strategy.on_bar)
-        self.back_test_bars = back_test_bars
         self.monitor = monitor
         self.api_callback = api_callback
 
-    def run(self):
-        for index, bar in self.back_test_bars.iterrows():
+    def run_backtest(self, back_test_bars):
+        for index, bar in back_test_bars.iterrows():
             if self.callback:
                 bar = Bar(
                     self.base_symbol, self.quote_symbol, 'HUOBI', self.intervals,

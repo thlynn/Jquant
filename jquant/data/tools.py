@@ -43,6 +43,10 @@ def atr(n, bars):
     return Decimal(str(result[-2]))
 
 
+def rsi(n, bars):
+    pass
+
+
 def calculate_pos_and_average_price(pos, average_price, volume, price):
     pos = Decimal(str(pos))
     volume = Decimal(str(volume))
