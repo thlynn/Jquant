@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from typing import Sequence, Dict
 
 import numpy as np
@@ -84,7 +86,7 @@ class BaseStrategy:
                 bars['high'][-1] = bar.high_price
             if bars['low'][-1] > bar.low_price:
                 bars['low'][-1] = bar.low_price
-            bars['amount'][-1] += bar.amount
+            bars['amount'][-1] = Decimal(str(bars['amount'][-1])) + bar.amount
         else:
             self.logger.error(f"last_bar_timestamp:{bars['timestamp'][-1]}, bar_timestamp:{bar.timestamp}")
             raise TimestampError()

@@ -44,7 +44,8 @@ def atr(n, bars):
 
 
 def rsi(n, bars):
-    return Decimal(str(talib.RSI(bars['close'], timeperiod=8)))
+    result = talib.RSI(bars['close'], timeperiod=8)
+    return Decimal(str(result[-1]))
 
 
 def calculate_pos_and_average_price(pos, average_price, volume, price):
