@@ -17,11 +17,19 @@ class BaseStrategy:
         self.lever_rate = lever_rate
         self.array_size = array_size
 
-        self.bars_1minutes = {
+        self.bars_1min = {
             'timestamp': np.zeros(self.array_size), 'open': np.zeros(self.array_size), 'high': np.zeros(self.array_size),
             'low': np.zeros(self.array_size), 'close': np.zeros(self.array_size), 'amount': np.zeros(self.array_size)}
 
-        self.bars_15minutes = {
+        self.bars_15min = {
+            'timestamp': np.zeros(self.array_size), 'open': np.zeros(self.array_size), 'high': np.zeros(self.array_size),
+            'low': np.zeros(self.array_size), 'close': np.zeros(self.array_size), 'amount': np.zeros(self.array_size)}
+
+        self.bars_30min = {
+            'timestamp': np.zeros(self.array_size), 'open': np.zeros(self.array_size), 'high': np.zeros(self.array_size),
+            'low': np.zeros(self.array_size), 'close': np.zeros(self.array_size), 'amount': np.zeros(self.array_size)}
+
+        self.bars_60min = {
             'timestamp': np.zeros(self.array_size), 'open': np.zeros(self.array_size), 'high': np.zeros(self.array_size),
             'low': np.zeros(self.array_size), 'close': np.zeros(self.array_size), 'amount': np.zeros(self.array_size)}
 
@@ -33,27 +41,9 @@ class BaseStrategy:
         # logger
         self.logger = get_logger('strategy')
 
-    def init_bars(self, bars):
+    def init_bars(self, bars, intervals):
         for bar in bars:
-            self.bars_1minutes['timestamp'][:-1] = self.bars_1minutes['timestamp'][1:]
-            self.bars_1minutes['timestamp'][-1] = bar.timestamp
-
-            self.bars_1minutes['open'][:-1] = self.bars_1minutes['open'][1:]
-            self.bars_1minutes['open'][-1] = bar.open_price
-
-            self.bars_1minutes['high'][:-1] = self.bars_1minutes['high'][1:]
-            self.bars_1minutes['high'][-1] = bar.high_price
-
-            self.bars_1minutes['low'][:-1] = self.bars_1minutes['low'][1:]
-            self.bars_1minutes['low'][-1] = bar.low_price
-
-            self.bars_1minutes['close'][:-1] = self.bars_1minutes['close'][1:]
-            self.bars_1minutes['close'][-1] = bar.close_price
-
-            self.bars_1minutes['amount'][:-1] = self.bars_1minutes['amount'][1:]
-            self.bars_1minutes['amount'][-1] = bar.amount
-
-            self.update_minute_bars(self.bars_15minutes, bar, 15)
+            self.update_bars(bar, intervals)
 
         self.calculate_parameters()
 
@@ -86,7 +76,7 @@ class BaseStrategy:
                 bars['high'][-1] = bar.high_price
             if bars['low'][-1] > bar.low_price:
                 bars['low'][-1] = bar.low_price
-            bars['amount'][-1] = Decimal(str(bars['amount'][-1])) + bar.amount
+            bars['amount'][-1] = Decimal(str(bars['amount'][-1])) + Decimal(str(bar.amount))
         else:
             self.logger.error(f"last_bar_timestamp:{bars['timestamp'][-1]}, bar_timestamp:{bar.timestamp}")
             raise TimestampError()
@@ -94,9 +84,17 @@ class BaseStrategy:
     def calculate_parameters(self):
         pass
 
-    def update_bars(self, bar: Bar):
-        self.update_minute_bars(self.bars_1minutes, bar, 1)
-        self.update_minute_bars(self.bars_15minutes, bar, 15)
+    def update_bars(self, bar: Bar, intervals):
+        minutes = 0
+        if intervals == '1min':
+            minutes = 1
+        elif intervals == '15min':
+            minutes = 15
+        elif intervals == '60min':
+            minutes = 60
+        if minutes:
+            bar_dict = getattr(self, f'bars_{intervals}')
+            self.update_minute_bars(bar_dict, bar, minutes)
 
     def place_contract_order(self, order: object):
         pass
