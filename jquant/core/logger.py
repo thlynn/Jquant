@@ -15,7 +15,7 @@ def get_console_handler():
 def get_file_handler(file_name):
     direction = '/var/log'
     os.makedirs(direction, exist_ok=True)
-    file_handler = RotatingFileHandler(f'{direction}/{file_name}.log', mode='w', maxBytes=10485760)
+    file_handler = RotatingFileHandler(f'{direction}/{file_name}.log', mode='w', maxBytes=5000000, backupCount=2)
     file_handler.setFormatter(FORMATTER)
     return file_handler
 

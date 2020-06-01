@@ -45,10 +45,10 @@ class BackTestAPI(BaseAPI):
         volume = order.volume
 
         # slippage
-        if direction == 'buy':
-            price += Decimal(10)
-        elif direction == 'sell':
-            price -= Decimal(10)
+        # if direction == 'buy':
+        #     price += Decimal(10)
+        # elif direction == 'sell':
+        #     price -= Decimal(10)
 
         order.trade_volume = order.volume
         order.trade_avg_price = price

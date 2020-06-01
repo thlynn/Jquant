@@ -107,7 +107,8 @@ class SubscribeHUOBIFutureBackTest(Subscribe):
             if self.callback:
                 bar = Bar(
                     self.base_symbol, self.quote_symbol, 'HUOBI', self.intervals,
-                    bar.timestamp, bar.open_price, bar.high_price, bar.low_price, bar.close_price, bar.amount)
+                    bar.timestamp, Decimal(str(bar.open_price)), Decimal(str(bar.high_price)),
+                    Decimal(str(bar.low_price)), Decimal(str(bar.close_price)), bar.amount)
 
                 self.callback(bar)
 
