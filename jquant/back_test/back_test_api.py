@@ -11,7 +11,7 @@ from model.BaseModel import OrderFuture, Bar
 
 class BackTestAPI(BaseAPI):
 
-    def __init__(self):
+    def __init__(self, slippage=0):
         super().__init__()
         self.logger = get_logger('test_back_api')
         self.orders = list()
@@ -21,6 +21,7 @@ class BackTestAPI(BaseAPI):
         self.short_pos = {'volume': 0, 'price': Decimal('0')}
         self.fee_rate = Decimal('0.0003')
         self.client_order_id = int(datetime.timestamp(datetime.now()))
+        self.slippage = slippage
 
     def send_contract_order(self, order: OrderFuture):
         self.client_order_id += 1
@@ -45,10 +46,10 @@ class BackTestAPI(BaseAPI):
         volume = order.volume
 
         # slippage
-        # if direction == 'buy':
-        #     price += Decimal(10)
-        # elif direction == 'sell':
-        #     price -= Decimal(10)
+        if direction == 'buy':
+            price += Decimal(self.slippage)
+        elif direction == 'sell':
+            price -= Decimal(self.slippage)
 
         order.trade_volume = order.volume
         order.trade_avg_price = price
