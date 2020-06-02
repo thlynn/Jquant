@@ -48,6 +48,11 @@ def rsi(n, bars):
     return result[-1]
 
 
+def rsi_array(n, bars):
+    result = talib.RSI(bars['close'], timeperiod=n)
+    return result
+
+
 def calculate_pos_and_average_price(pos, average_price, volume, price):
     pos = Decimal(str(pos))
     volume = Decimal(str(volume))
