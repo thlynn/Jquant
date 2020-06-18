@@ -21,6 +21,10 @@ class BaseStrategy:
             'timestamp': np.zeros(self.array_size), 'open': np.zeros(self.array_size), 'high': np.zeros(self.array_size),
             'low': np.zeros(self.array_size), 'close': np.zeros(self.array_size), 'amount': np.zeros(self.array_size)}
 
+        self.bars_5min = {
+            'timestamp': np.zeros(self.array_size), 'open': np.zeros(self.array_size), 'high': np.zeros(self.array_size),
+            'low': np.zeros(self.array_size), 'close': np.zeros(self.array_size), 'amount': np.zeros(self.array_size)}
+
         self.bars_15min = {
             'timestamp': np.zeros(self.array_size), 'open': np.zeros(self.array_size), 'high': np.zeros(self.array_size),
             'low': np.zeros(self.array_size), 'close': np.zeros(self.array_size), 'amount': np.zeros(self.array_size)}
@@ -88,6 +92,8 @@ class BaseStrategy:
         minutes = 0
         if intervals == '1min':
             minutes = 1
+        elif intervals == '5min':
+            minutes = 5
         elif intervals == '15min':
             minutes = 15
         elif intervals == '60min':

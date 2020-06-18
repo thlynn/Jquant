@@ -35,6 +35,15 @@ def donchian(n, bars):
     return Decimal(str(up[-2])), Decimal(str(down[-2]))
 
 
+def donchian_array(n, bars):
+    """
+    Donchian Channel.
+    """
+    up = talib.MAX(bars['high'], n)
+    down = talib.MIN(bars['low'], n)
+    return up, down
+
+
 def atr(n, bars):
     """
     Average True Range (ATR).
