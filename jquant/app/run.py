@@ -4,9 +4,8 @@ from abc import ABC, abstractmethod
 
 class Run(ABC):
 
-    def __init__(self, base_symbol, quote_symbol, pos, intervals):
-        self.base_symbol = base_symbol
-        self.quote_symbol = quote_symbol
+    def __init__(self, symbol, pos, intervals):
+        self.symbol = symbol
         self.pos = pos
         self.intervals = intervals
 

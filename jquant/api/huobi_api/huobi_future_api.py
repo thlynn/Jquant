@@ -10,7 +10,7 @@ from datetime import datetime
 
 class HUOBIFutureAPI(BaseAPI):
 
-    def __init__(self, access_key, secret_key, base_url, contract_type, contract_code):
+    def __init__(self, access_key, secret_key, base_url, contract_type, contract_code, lever_rate):
         super().__init__()
         self.base_url = base_url
         self.huobi_dm = HuobiDM(base_url, access_key, secret_key)
@@ -18,6 +18,7 @@ class HUOBIFutureAPI(BaseAPI):
 
         self.contract_type = contract_type
         self.contract_code = contract_code
+        self.lever_rate = lever_rate
 
         self.logger = get_logger('trade_api')
 
@@ -29,21 +30,21 @@ class HUOBIFutureAPI(BaseAPI):
             price:{order.price};volume:{order.volume};order_type:{order.order_type};offset:{order.offset};direction:{order.direction}''')
 
         response = self.huobi_dm.send_contract_order(
-            order.base_symbol, self.contract_type, self.contract_code,
+            order.symbol, self.contract_type, self.contract_code,
             self.client_order_id, order.price, order.volume,
-            order.direction, order.offset, order.lever_rate, order.order_type)
+            order.direction, order.offset, self.lever_rate, order.order_type)
 
         if response['status'] != 'ok':
             err_code = response.get('err_code', 0)
             self.logger.warn(f"order_client_id:{order.order_client_id};err_code:{err_code};err_msg:{response['err_msg']}")
             # Insufficient close amount available
             if err_code == 1048:
-                self.huobi_dm.cancel_all_contract_order(str.upper(order.base_symbol))
+                self.huobi_dm.cancel_all_contract_order(str.upper(order.symbol))
 
     def cancel_contract_order(self, order: OrderFuture):
         self.logger.info(f'Cancel Order:{order.order_client_id}')
 
-        response = self.huobi_dm.cancel_contract_order(order.base_symbol, client_order_id=order.order_client_id)
+        response = self.huobi_dm.cancel_contract_order(order.symbol, client_order_id=order.order_client_id)
         if response['status'] == 'ok':
             return True
         else:
@@ -53,7 +54,7 @@ class HUOBIFutureAPI(BaseAPI):
 
     def get_contract_order_info(self, order: OrderFuture):
         time.sleep(1)
-        response = self.huobi_dm.get_contract_order_info(order.base_symbol, '', order.order_client_id)
+        response = self.huobi_dm.get_contract_order_info(order.symbol, '', order.order_client_id)
         if response['status'] == 'ok':
             data = response['data'][0]
 

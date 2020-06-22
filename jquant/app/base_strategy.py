@@ -11,10 +11,7 @@ from model.BaseModel import Bar
 
 class BaseStrategy:
 
-    def __init__(self, base_symbol, quote_symbol, trade_api, lever_rate=1, array_size=2000):
-        self.base_symbol = base_symbol
-        self.quote_symbol = quote_symbol
-        self.lever_rate = lever_rate
+    def __init__(self, trade_api, array_size=2000):
         self.array_size = array_size
 
         self.bars_1min = {

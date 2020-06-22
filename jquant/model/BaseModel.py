@@ -12,8 +12,7 @@ class Exchange(Enum):
 
 @dataclass
 class OrderFuture:
-    base_symbol: str
-    quote_symbol: str
+    symbol: str
     # sell/buy
     direction: str
     # open/close
@@ -22,7 +21,6 @@ class OrderFuture:
     volume: int
     # limit/market order
     order_type: str
-    lever_rate: int
     order_client_id: int = 0
     trade_volume: Decimal = Decimal('0')
     trade_avg_price: Decimal = Decimal('0')
@@ -48,8 +46,7 @@ class TradeInfo:
 
 @dataclass
 class Bar:
-    base_symbol: str
-    quote_symbol: str
+    symbol: str
     exchange: str
     period: str
     timestamp: int
