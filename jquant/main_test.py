@@ -4,7 +4,7 @@ from app_private.rsi.rsi_run_back_test import RSIRunBackTest
 
 
 if __name__ == "__main__":
-    bars = pd.read_csv('/var/csv/huobi_future_test_365days.csv')
+    bars = pd.read_csv('huobi_future_data_1year.csv')
     init_bars = bars.iloc[:3600]
     back_test_bars = bars.iloc[3600:]
 

@@ -9,7 +9,6 @@
 *.log.*
 /log
 test_run.py
-*.csv
 restats
 /jquant/main.py
 .github
