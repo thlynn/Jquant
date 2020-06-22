@@ -1,5 +1,11 @@
+import json
+
 from datetime import datetime
 from datetime import timedelta
+from websocket import create_connection
+
+from data.subscribe import Subscribe
+from data.tools import inflate
 from model.BaseModel import Bar, Exchange
 import api.okex.futures_api as future
 from config import Keys
@@ -68,3 +74,29 @@ class OKExData(object):
             bar.low_price = float(arr[3])
             bars.append(bar.__dict__)
         return bars
+
+
+class SubscribeOKEXFuture(Subscribe):
+
+    def __init__(self, base_symbol, quote_symbol, intervals, callback=None):
+        super().__init__(base_symbol, quote_symbol, intervals, callback)
+        self.ws_url = create_connection("wss://real.okex.com:8443/ws/v3")
+
+    def run(self):
+        while True:
+            result = inflate(self.ws_url.recv())
+            if result == b'pong':
+                pass
+            else:
+                json_obj = json.loads(result)
+                if 'data' in json_obj.keys():
+                    data = json_obj['data'][0]
+                    candle = data['candle']
+                    timestamp = datetime.strptime(
+                        candle[0], '%Y-%m-%dT%H:%M:%S.%fZ')
+                    self.timestamp = timestamp
+                    if candle[4]:
+                        self.close = float(candle[4])
+                    if (not self.timestamp or
+                            self.timestamp.minute != timestamp.minute):
+                        self.ws_url.send('ping')

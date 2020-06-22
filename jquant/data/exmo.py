@@ -7,6 +7,7 @@ import requests
 from pytz import timezone
 
 from data.candlesticks import BaseCandlestick
+from data.subscribe import Subscribe
 from model.BaseModel import Bar
 
 
@@ -63,3 +64,22 @@ class EXMOCandlestick(BaseCandlestick):
     def parse_data(self, data):
         self.bars = data
 
+
+class SubscribeEXMO(Subscribe):
+
+    def __init__(self, base_symbol, quote_symbol):
+        super().__init__(base_symbol, quote_symbol)
+        self.ticker_url = "https://api.exmo.com/v1/ticker/"
+
+    def run(self):
+        while True:
+            time.sleep(0.5)
+            try:
+                res = requests.get(self.ticker_url, timeout=5)
+            except IOError:
+                continue
+            ticker = json.loads(res.content)[f'{str.upper(self.base_symbol)}_{str.upper(self.quote_symbol)}']
+            updated = ticker['updated']
+
+            self.timestamp = updated
+            self.close = Decimal(str(ticker['last_trade']))
