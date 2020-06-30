@@ -37,7 +37,7 @@ class TurtleRun(Run):
         return strategy
 
     def instantiate_history(self):
-        history = HUOBIFutureHistory(self.symbol, intervals=self.intervals)
+        history = HUOBIFutureHistory(self.symbol)
         return history
 
     def start_monitor(self, strategy):

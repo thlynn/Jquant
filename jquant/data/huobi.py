@@ -136,6 +136,8 @@ class SubscribeHUOBIFuture(Subscribe):
                 self.high = Decimal(str(tick['high']))
                 self.amount = Decimal(str(tick['amount']))
 
+                self.logger.debug(f'timestamp: {self.timestamp}, close: {self.close}')
+
                 if self.callback:
                     bar = Bar(
                         self.symbol, self.name, self.intervals,
